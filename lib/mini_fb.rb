@@ -216,6 +216,16 @@ module MiniFB
         end
         return false
     end
+    
+    # The cookie format has changed with the new open source
+    # javascript SDK. See "Has the Cookie format changed" in
+    # the Facebook Connect JavaScript SDK FAQ:
+    # http://wiki.github.com/facebook/connect-js/faq
+    # Returns true is signature is valid, false otherwise.
+    def MiniFB.verify_session_signature(secret, arguments)
+      signature = arguments.delete('sig')
+      signature == Digest::MD5.hexdigest(arguments.sort.map {|kv| kv.join('=') }.join << secret)
+    end
 
     # Returns the login/add app url for your application.
     #
